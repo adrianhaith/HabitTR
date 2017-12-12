@@ -8,8 +8,8 @@ cols(:,:,2) = [ 0 155 255; 255 100 0; 0 0 0; 155 0 255]/256;
 cols(:,:,3) = [0 100 255; 255 0 0; 0 0 0; 100 0 255]/256;
 
 for c=1:3
-    for i=1:24   
-        data(i,c).exclude = isempty(data(i,c).RT);
+    for s=1:24   
+        data(s,c).exclude = isempty(data(s,c).RT);
     end
 end
 

@@ -81,13 +81,21 @@ figure(101); clf; hold on
 for i=1:3
     
     plot(i+.2*(-.5+[1:24]/24),model(1).AIC(i,:)-model(2).AIC(i,:),'b.','markersize',10);
-    dAICav = nanmean(model(1).AIC(i,:)-model(2).AIC(i,:));
-    dAICse = nanstd(model(1).AIC(i,:)'-model(2).AIC(i,:)');
-    plot(i,dAICav,'k.','markersize',12);
-    plot([i i],dAICav+[-dAICse/2 dAICse/2],'k','linewidth',2)
+    dAICav(i) = nanmean(model(1).AIC(i,:)-model(2).AIC(i,:));
+    dAICse(i) = nanstd(model(1).AIC(i,:)'-model(2).AIC(i,:)');
+    plot(i,dAICav(i),'k.','markersize',12);
+    plot([i i],dAICav(i)+[-dAICse(i)/2 dAICse(i)/2],'k','linewidth',2)
 end
+ylim([-20 70])
+xlim([0.5 3.5])
 plot([0 4],[0 0],'k')
 
+% figure out overall stats
+dAIC_habitual = model(1).AIC-model(2).AIC;
+nsubjs = sum(~isnan(dAIC_habitual(2,:)))
+habitual = (dAIC_habitual(2,:)<0) & (~isnan(dAIC_habitual(2,:)))
+
+disp([num2str(nsubjs - sum(habitual)) '/' num2str(nsubjs) ' were habitual'])
 %% make AIC figure for continuous model
 figure(102); clf; hold on
 for i=1:3
@@ -97,8 +105,11 @@ for i=1:3
     dAICse = nanstd(model(3).AIC(i,:)'-model(2).AIC(i,:)');
     plot(i,dAICav,'k.','markersize',12);
     plot([i i],dAICav+[-dAICse/2 dAICse/2],'k','linewidth',2)
+    %keyboard
 end
 plot([0 4],[0 0],'k')
+
+
 
 %% generate pdfs
 %makepdf=1;
@@ -117,3 +128,4 @@ if(makepdf)
     end
     eval(evalstr);
 end
+

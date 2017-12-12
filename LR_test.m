@@ -11,7 +11,7 @@ Lambda_all = max(2*(LLall_3-LLall_2),0); % likelihood ratio statistic
 % compute p-value
 %[h,pValue] = lratiotest(Lall_3,Lall_2,1)
 p_all2 = 1-chi2cdf(Lambda_all,21)
-
+disp(['p-value for flex-habit model, 4-day practice condition = ',num2str(p_all2)])
 %%
 % individual participants
 for s=1:24
@@ -58,6 +58,7 @@ Lambda_all3 = max(2*(LLall_3_3-LLall_2_3),0); % likelihood ratio statistic
 % compute p-value
 %[h,pValue] = lratiotest(Lall_3,Lall_2,1)
 p_all3 = 1-chi2cdf(Lambda_all3,21)
+disp(['p-value for flex-habit model, 20-day condition = ',num2str(p_all3)])
 %% same for condition 1
 % individual participants
 for s=1:24
