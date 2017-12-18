@@ -1,0 +1,17 @@
+% test pooled fit
+
+s=1;
+c=3;
+
+model_simp = fit_model(data(s,c).RT,data(s,c).response,2,NaN*ones(1,6),1);
+
+figure(1); clf; hold on
+xplot = model_simp.xplot;
+subplot(1,2,1); hold on
+plot(xplot,model_simp.presponse(1,:),'r')
+plot(xplot,model_simp.presponse(2,:),'g')
+plot(xplot,model_simp.presponse(3,:)/2,'m')
+
+plot(xplot,data(s,c).sliding_window(1,:),'r')
+plot(xplot,data(s,c).sliding_window(2,:),'r')
+plot(xplot,data(s,c).sliding_window(3,:),'r')

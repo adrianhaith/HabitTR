@@ -13,6 +13,8 @@ function [nLL Lv LL] = habit_lik(RT,response,params,Nprocesses)
 % get probabilites of each response at each RT
 presponse = getResponseProbs_U(RT,params,Nprocesses);
 
+%keyboard
+
 % pull out likelihood for observed responses
 RR = zeros(size(presponse));
 for i=1:Nprocesses+1

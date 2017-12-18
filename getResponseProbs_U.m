@@ -12,7 +12,7 @@ q(Nresponses) = params(2*Nresponses+1); % specify asymptotic error for Nth proce
 
 initAE = params(end-1);
 rho = params(end);
-
+%keyboard
 for i=1:Nresponses
     Phi(i,:) = normcdf(RT,p_mu_var(i,1),p_mu_var(i,2)); % probability that A has been planned by RT
 end
@@ -36,18 +36,19 @@ switch(Nresponses)
     case 2
         if(incongruent)
             Alpha(1,:) = [.25 rho*(1-q(1))/3+(1-rho)*.25 q(2) q(2)]; % [p(r=B|!A!B) p(r=B|A!B) p(r=B|!AB) p(r=B|AB)] 
-            Alpha(2,:) = [.25 rho*q(1)+(1-rho)*.25 (1-q(2))/3 (1-q(2))/3]; % [p(r=A|!A!B) p(r=A|A!B) p(r=A|!AB) p(r=A|AB)]
-            Alpha(3,:) = [.5 rho*2*(1-q(1))/3+(1-rho)*.5 2*(1-q(2))/3 2*(1-q(2))/3]; % [p(r=C|!A!B) p(r=C|A!B) p(r=C|!AB) p(r=C|AB)]
-            Alpha(4,:) = [initAE q(1) q(1) q(1)]; % p(r=A), no-conflict
+            Alpha(2,:) = [initAE rho*q(1)+(1-rho)*.25 (1-q(2))/3 (1-q(2))/3]; % [p(r=A|!A!B) p(r=A|A!B) p(r=A|!AB) p(r=A|AB)]
+            Alpha(3,:) = [.75-initAE rho*2*(1-q(1))/3+(1-rho)*.5 2*(1-q(2))/3 2*(1-q(2))/3]; % [p(r=C|!A!B) p(r=C|A!B) p(r=C|!AB) p(r=C|AB)]
+            Alpha(4,:) = [initAE q(1) initAE q(1)]; % p(r=A), no-conflict
             Alpha(5,:) = [initAE initAE q(2) q(2)]; % p(r=B), no-conflict
             
             PhiAll = [(1-Phi(1,:)).*(1-Phi(2,:)); Phi(1,:).*(1-Phi(2,:)); (1-Phi(1,:)).*Phi(2,:); Phi(1,:).*Phi(2,:)];
-        
+           
+            %keyboard
         else
             Alpha(1,:) = [.25 q(1) .25 .25]; % [p(r=A|!A!B) p(r=A|A!B) p(r=A|!AB) p(r=A|AB)]
             Alpha(2,:) = [.25 .25 q(2) q(2)]; % [p(r=B|!A!B) p(r=B|A!B) p(r=B|!AB) p(r=B|AB)]
             Alpha(3,:) = [.25 .25 .25 .25]; % [p(r=C|!A!B) p(r=C|A!B) p(r=C|!AB) p(r=C|AB)]
-            Alpha(4,:) = [initAE q(1) q(1) q(1)]; % p(r=A), no-conflict
+            Alpha(4,:) = [initAE q(1) initAE q(1)]; % p(r=A), no-conflict
             Alpha(5,:) = [initAE initAE q(2) q(2)]; % p(r=B), no-conflict
             
             PhiAll = [(1-Phi(1,:)).*(1-Phi(2,:)); Phi(1,:).*(1-Phi(2,:)); (1-Phi(1,:)).*Phi(2,:); Phi(1,:).*Phi(2,:)];
