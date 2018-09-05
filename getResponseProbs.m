@@ -1,6 +1,9 @@
 function presponse = getResponseProbs(RT,params,model)
 % returns response probabilities (correct, habit, error) given RTs and
 % parameters
+% 
+% model = 'habit', 'no-habit', 'flex-habit'
+
 paramsA = params(1:3);
 paramsB = params(4:6);
 initAE = params(7);

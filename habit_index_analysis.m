@@ -1,4 +1,5 @@
 clear all
+close all
 load HabitData
 
 % habit index
@@ -57,6 +58,10 @@ shadedErrorBar([],nanmean(other_err(:,:,1)),seNaN(other_err(:,:,1)),'r')
 shadedErrorBar([],nanmean(other_err(:,:,2)),seNaN(other_err(:,:,2)),'g')
 shadedErrorBar([],nanmean(other_err(:,:,3)),seNaN(other_err(:,:,3)),'b')
 axis([0 1200 -.1 1])
+
+
+figure()
+
 
 %{
 figure(113); clf; hold on
@@ -166,6 +171,40 @@ plot(3*[1 1],nanmean(habit_index_norm_av(:,3))*[1 1]+seNaN(habit_index_norm_av(:
 igood = find(~isnan(habit_index_norm_av(:,1)));
 plot([0.5 3.5],(nanmean(habit_index_norm_av(:,1))+2*std(habit_index_norm_av(igood,1)))*[1 1],'r:')
 
+%% Pretty figure
+figure(104); hold on
+
+d.color.habit.untrained                = [255   175   0]/255;
+d.color.habit.trained                  = [255   100   0]/255;
+d.color.habit.extendedTrained          = [255    0    0]/255;
+
+% title('normalized habit index (norm. to 0-200ms)')
+
+
+
+plot(1+.5*rand(1,24)-.25,habit_index_norm_av(:,1),'.','color',d.color.habit.untrained       ,'markersize',15)
+plot(2+.5*rand(1,24)-.25,habit_index_norm_av(:,2),'.','color',d.color.habit.trained         ,'markersize',15)
+plot(3+.5*rand(1,24)-.25,habit_index_norm_av(:,3),'.','color',d.color.habit.extendedTrained ,'markersize',15)
+
+% plot([1 1],nanmean(habit_index_norm_av(:,1))*[1 1]+seNaN(habit_index_norm_av(:,1))*[-1 1],'color','k','linewidth',3)
+% plot(2*[1 1],nanmean(habit_index_norm_av(:,2))*[1 1]+seNaN(habit_index_norm_av(:,2))*[-1 1],'color','k','linewidth',3)
+% plot(3*[1 1],nanmean(habit_index_norm_av(:,3))*[1 1]+seNaN(habit_index_norm_av(:,3))*[-1 1],'color','k','linewidth',3)
+
+errorbar(1:3,nanmean(habit_index_norm_av),seNaN(habit_index_norm_av),'.k','markersize',1);
+
+igood = find(~isnan(habit_index_norm_av(:,1)));
+plot([0.5 3.5],(nanmean(habit_index_norm_av(:,1))+2*std(habit_index_norm_av(igood,1)))*[1 1],'k--')
+set(gca,'tickdir','out');
+ylabel('Normalized habit index');
+xlabel('Condition')
+%xticks(1:3)
+%xticklabels({'Minimal','4 Days','20 Days'})
+
+axis([0.5 3.5 -.25 1.5])
+%yticks(-0.25:.25:1.5)
+%yticklabels({'','0','','0.5','','1.0','','1.5'});
+
+
 %% split data into habit/no-habit - norm
 
 %{
@@ -207,3 +246,4 @@ plot(habit_err(i_habit3,:,3)','g')
 plot(habit_err(i_nohabit3,:,3)','k')
 %}
 %%
+

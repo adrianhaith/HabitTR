@@ -1,4 +1,4 @@
-function model = fit_model(RT,response,Nprocesses,fixed_params,simplified)
+function model = fit_model(RT,response,Nprocesses,fixed_params,simplified,optimizer)
 % fits selection model to forced RT data by max. likelihood
 %
 % Inputs:
@@ -21,20 +21,24 @@ function model = fit_model(RT,response,Nprocesses,fixed_params,simplified)
 %                                   distribution for each process
 %                   qN            - asymptotic error for last process
 %                   qInit         - lower asymptotic error
-%                   rho ]         - habit strength
+%                   rho1          - habit strength
+%                   rho2]         - lapse rate for goal-directed response
 %
 if(nargin < 5)
     simplified = 0;
 end
 
-optimizer='fmincon'; % 'bads' or 'fmincon'. 'bads' is more exhaustive, but much slower
+%optimizer='fmincon'; % 'bads' or 'fmincon'. 'bads' is more exhaustive, but much slower
+if(nargin<6)
+    optimizer = 'fmincon';
+end
 
 % set up bounds for model
 LB_soft = .0001; % lower bound close to 0
 UB_soft = .9999; % upper bound close to 1
 
 % set up bounds and constraints
-switch Nprocesses
+switch(Nprocesses)
     case 1
         if(nargin<4)
             fixed_params = NaN*[1 1 1 1]; % all parameters open unless specified
@@ -49,15 +53,15 @@ switch Nprocesses
         A = []; B = []; % inequality constraints
     case 2
         if(nargin<4)
-            fixed_params = NaN*[1 1 1 1 1 1 1]; % all parameters open unless specified
+            fixed_params = NaN*[1 1 1 1 1 1 1 1]; % all parameters open unless specified
         end 
-        paramsInit = [.4 .05 .5 .05 .95 .2 .5];
-        LB = [0 .01 0 .01 .5 LB_soft 0];
+        paramsInit = [.4 .05 .5 .05 .95 .2 .2 1];
+        LB = [0 .01 0 .01 .5 LB_soft 0 .5];
         %PLB = [.2 .02 .2 .02 .6 .1 LB_soft];
-        UB = [.75 100 .75 100 UB_soft .5 1];
+        UB = [.75 100 .75 100 UB_soft .5 1 1];
         %PUB = [.7 .1 .7 .1 UB_soft .4 UB_soft];
         
-        A = [1 0 -1 0 0 0 0]; B = [0]; % inequality constraints (mu1 < mu2)
+        A = [1 0 -1 0 0 0 0 0]; B = [0]; % inequality constraints (mu1 < mu2)
         
     case 3
         paramsInit = [.4 .05 .4 .05 .5 .05 .95 .25 1];
@@ -93,7 +97,6 @@ end
 paramsInit(i_fix) = fixed_params(i_fix);
 
 
-
 %keyboard
 
 % weed out bad trials
@@ -123,6 +126,7 @@ end
 model.presponse = getResponseProbs_U(model.xplot,model.paramsOpt,Nprocesses)
 [model.nLL model.Lv model.LL] = like_fun(model.paramsOpt);
                 
+
 
 %keyboard
 %{

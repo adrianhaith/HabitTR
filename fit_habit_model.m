@@ -4,7 +4,7 @@
 %
 clear all
 
-optimizer='bads'; % or 'fmincon'
+optimizer= 'fmincon'; % 'bads' or 'fmincon'
 
 % load data
 load HabitData;

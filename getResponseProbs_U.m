@@ -1,18 +1,36 @@
 function presponse = getResponseProbs(RT,params,Nresponses,incongruent)
 % returns response probabilities (correct, habit, error) given RTs and
 % parameters
+%
+% params = [mu1; 
+%           sigma1; 
+%           mu2; 
+%           sigma2;
+%           ...;
+%           asymptotic error;
+%           init error;
+%           habit strength (rho); - probability of habitual expression
+%           lapse rate (rho2)] - probability of not retrieving correct response
+
 if(nargin<4)
     incongruent = 1;
 end
 for i=1:Nresponses
     p_mu_var(i,:) = [params([2*i-1 2*i])]; % mean and variance for each process
-    q(i) = .95; % asymptotic error for each processes
+    q(i) = .95; % asymptotic error for each processes - assume 0.95
 end
 q(Nresponses) = params(2*Nresponses+1); % specify asymptotic error for Nth process
 
-initAE = params(end-1);
-rho = params(end);
-%keyboard
+initAE = params(2*Nresponses+2); % initial asymptotic error
+
+rho(1) = 1-params(2*Nresponses+3); % habit strength
+
+if(length(params)<2*Nresponses+4) % probability of replacing habitual response
+    rho(2) = 0;
+else
+    rho(2) = 1-params(2*Nresponses+4);
+end
+
 for i=1:Nresponses
     Phi(i,:) = normcdf(RT,p_mu_var(i,1),p_mu_var(i,2)); % probability that A has been planned by RT
 end
@@ -35,14 +53,23 @@ switch(Nresponses)
         
     case 2
         if(incongruent)
-            Alpha(1,:) = [.25 rho*(1-q(1))/3+(1-rho)*.25 q(2) q(2)]; % [p(r=B|!A!B) p(r=B|A!B) p(r=B|!AB) p(r=B|AB)] 
-            Alpha(2,:) = [initAE rho*q(1)+(1-rho)*.25 (1-q(2))/3 (1-q(2))/3]; % [p(r=A|!A!B) p(r=A|A!B) p(r=A|!AB) p(r=A|AB)]
-            Alpha(3,:) = [.75-initAE rho*2*(1-q(1))/3+(1-rho)*.5 2*(1-q(2))/3 2*(1-q(2))/3]; % [p(r=C|!A!B) p(r=C|A!B) p(r=C|!AB) p(r=C|AB)]
+            % distribution of responses (rows: rA, rB, other) given
+            % different events (columns) (!A!B, A!B, !AB, AB)
+            Alpha(1,:) = [.25 (1-q(1))/3 q(2) q(2)]; % [p(r=B|!A!B) p(r=B|A!B) p(r=B|!AB) p(r=B|AB)] 
+            Alpha(2,:) = [initAE q(1) (1-q(2))/3 (1-q(2))/3]; % [p(r=A|!A!B) p(r=A|A!B) p(r=A|!AB) p(r=A|AB)]
+            Alpha(3,:) = [.75-initAE 2*(1-q(1))/3 2*(1-q(2))/3 2*(1-q(2))/3]; % [p(r=C|!A!B) p(r=C|A!B) p(r=C|!AB) p(r=C|AB)]
             Alpha(4,:) = [initAE q(1) initAE q(1)]; % p(r=A), no-conflict
             Alpha(5,:) = [initAE initAE q(2) q(2)]; % p(r=B), no-conflict
             
             PhiAll = [(1-Phi(1,:)).*(1-Phi(2,:)); Phi(1,:).*(1-Phi(2,:)); (1-Phi(1,:)).*Phi(2,:); Phi(1,:).*Phi(2,:)];
            
+            % probability of each event occurring (rows) given different
+            % timing events (columns) [t<tA,t<tB; t>tA,t<tB; t<tA,t>tB; t>tA,t>tB
+            P = [1 rho(1) rho(2) rho(1)*rho(2); % p(!A!B) given different timing events
+                0 1-rho(1) 0 (1-rho(1))*rho(2); % p(A!B) 
+                0 0 (1-rho(2)) rho(1)*(1-rho(2)); % p(!AB)
+                0 0 0 (1-rho(1))*(1-rho(2))]; % p(AB)
+            
             %keyboard
         else
             Alpha(1,:) = [.25 q(1) .25 .25]; % [p(r=A|!A!B) p(r=A|A!B) p(r=A|!AB) p(r=A|AB)]
@@ -63,4 +90,4 @@ end
 
 
 %Phi = [(1-PhiA).*(1-PhiB); PhiA.*(1-PhiB); (1-PhiA).*PhiB; PhiA.*PhiB];
-presponse = Alpha*PhiAll;
+presponse = Alpha*P*PhiAll;

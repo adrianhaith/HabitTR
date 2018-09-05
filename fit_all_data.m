@@ -1,4 +1,8 @@
 % fit global model to pooled data across all subjects
+clear all
+load HabitData
+xplot = .001*[1:1:1200];
+
 for c=1:3
     
     data_all(c).RT = [];
@@ -28,8 +32,8 @@ for c=1:3
     constrained_params(1:2) = model_all_unchanged(c).paramsOpt(1:2);
     
     
-    model_all(c) = fit_model(data_all(c).RT,data_all(c).response,2,[constrained_params 1],1);
-    model_all_flex(c) = fit_model(data_all(c).RT,data_all(c).response,2,[constrained_params NaN],1);
+    model_all(c) = fit_model(data_all(c).RT,data_all(c).response,2,[constrained_params 1],0);
+    model_all_flex(c) = fit_model(data_all(c).RT,data_all(c).response,2,[constrained_params NaN],0);
 
 end
 
