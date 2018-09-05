@@ -1,4 +1,4 @@
-function presponse = getResponseProbs(RT,params,Nresponses,incongruent)
+function presponse = getResponseProbs(RT,params)
 % returns response probabilities (correct, habit, error) given RTs and
 % parameters
 %
@@ -12,27 +12,17 @@ function presponse = getResponseProbs(RT,params,Nresponses,incongruent)
 %           habit strength (rho); - probability of habitual expression
 %           lapse rate (rho2)] - probability of not retrieving correct response
 
-if(nargin<4)
-    incongruent = 1;
-end
-for i=1:Nresponses
-    p_mu_var(i,:) = [params([2*i-1 2*i])]; % mean and variance for each process
-    q(i) = .95; % asymptotic error for each processes - assume 0.95
-end
-q(Nresponses) = params(2*Nresponses+1); % specify asymptotic error for Nth process
+Nresponses = 2; % always assume two responses
+mu(1:2) = [params(1) params(3)];
+var(1:2) = [params(2) params(4)];
 
-initAE = params(2*Nresponses+2); % initial asymptotic error
-
-rho(1) = params(2*Nresponses+3); % habit strength
-
-if(length(params)<2*Nresponses+4) % probability of replacing habitual response
-    rho(2) = 1;
-else
-    rho(2) = params(2*Nresponses+4);
-end
+q(1) = .95; % asymptotic error for first process
+q(2) = params(5); % asymptotic error for second process
+init_err(1:2) = params(6:7); % initial error rates for habitual and goal-directed responses
+rho(1:2) = params(8:9); % lapse rate for habit and goal-directed response selection
 
 for i=1:Nresponses
-    Phi(i,:) = rho(i)*normcdf(RT,p_mu_var(i,1),p_mu_var(i,2)); % probability that A has been planned by RT
+    Phi(i,:) = rho(i)*normcdf(RT,mu(i),var(i)); % probability that A has been planned by RT
 end
 %PhiB = normcdf(RT,paramsB(1),paramsB(2));
 
@@ -53,9 +43,9 @@ switch(Nresponses)
         
     case 2
         if(incongruent)
-            Alpha(1,:) = [.25 (1-q(1))/3 q(2) q(2)]; % [p(r=B|!A!B) p(r=B|A!B) p(r=B|!AB) p(r=B|AB)] 
-            Alpha(2,:) = [initAE q(1) (1-q(2))/3 (1-q(2))/3]; % [p(r=A|!A!B) p(r=A|A!B) p(r=A|!AB) p(r=A|AB)]
-            Alpha(3,:) = [.75-initAE (1-q(1))/3 2*(1-q(2))/3 2*(1-q(2))/3]; % [p(r=C|!A!B) p(r=C|A!B) p(r=C|!AB) p(r=C|AB)]
+            Alpha(1,:) = [initAE(1) (1-q(1))/3 q(2) q(2)]; % [p(r=B|!A!B) p(r=B|A!B) p(r=B|!AB) p(r=B|AB)] 
+            Alpha(2,:) = [initAE(2) q(1) (1-q(2))/3 (1-q(2))/3]; % [p(r=A|!A!B) p(r=A|A!B) p(r=A|!AB) p(r=A|AB)]
+            Alpha(3,:) = [1-initAE(1)-initAE(2) (1-q(1))/3 2*(1-q(2))/3 2*(1-q(2))/3]; % [p(r=C|!A!B) p(r=C|A!B) p(r=C|!AB) p(r=C|AB)]
             Alpha(4,:) = [initAE q(1) initAE q(1)]; % p(r=A), no-conflict
             Alpha(5,:) = [initAE initAE q(2) q(2)]; % p(r=B), no-conflict
             

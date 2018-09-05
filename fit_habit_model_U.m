@@ -4,7 +4,7 @@
 %
 clear all
 
-optimizer= 'bads'; % 'bads' or 'fmincon'
+optimizer= 'fmincon'; % 'bads' or 'fmincon'
 
 % load data
 load HabitData;
@@ -26,7 +26,7 @@ for c = 1:3 % 1=minimal, 2=4day, 3=4week
                         constrained_params = NaN*ones(1,7);
                 end
                 %habit_lik(data(subject,c).RT,data(subject,c).response,params,model(m).name);
-                model{m,subject,c} = fit_model(data(subject,c).RT,data(subject,c).response,Nprocesses,constrained_params,0,optimizer);
+                model{m,subject,c} = fit_model(data(subject,c).RT,data(subject,c).response,constrained_params,optimizer);
                 
                 %[model(m).paramsOpt(subject,:,c), model(m).LLopt(c,subject)] = fmincon(like_fun,paramsInit,A,B,Aeq,Beq,LB,UB);
                 
