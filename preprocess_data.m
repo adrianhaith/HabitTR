@@ -82,7 +82,7 @@ for c = 1:3 % 1=minimal, 2=4day, 3=4week
         if(data(subject,c).asympt_err<.7)
             % for now, delete RT as this is current proxy for excluded
             % subjects
-            data(subject,c).RT = [];
+            %data(subject,c).RT = [];
         end
         end
     end

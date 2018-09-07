@@ -3,7 +3,7 @@
 % model 1 = habit model - assume
 %
 clear all
-
+tic
 optimizer= 'fmincon'; % 'bads' or 'fmincon'
 
 % load data
@@ -119,3 +119,4 @@ switch (optimizer)
     case 'fmincon'
         save HabitModelFits_U model data
 end
+toc

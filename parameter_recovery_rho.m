@@ -1,13 +1,13 @@
 % test parameter recovery - focus on showing that rho can be accurately
 % estimated
 clear all
-load HabitModelFits_bads_U
-optimizer = 'bads'; % 'bads' or 'fmincon'
+load HabitModelFits_U
+optimizer = 'fmincon'; % 'bads' or 'fmincon'
 %%
-Nsamps = 10;
+Nsamps = 100;
 
-s = 1; % subject
-c = 3; % condition
+s = 8; % subject
+c = 2; % condition
 %model_type = 'flex-habit';
 
 % generate data
@@ -18,6 +18,7 @@ RT = data(s,c).RT;
 
 % set parameters
 params_original = model{3,s,c}.paramsOpt;
+params_original(7) = 0.5;
 % get parameter fits for this participant:
 %like_fun = @(params) habit_lik(data(s,c).RT,data(s,c).response,params,model_type);
 %habit_lik(data(s,c).RT,data(s,c).response,paramsInit,model_type);
@@ -43,7 +44,7 @@ for j=1:Nsamps % sample
     %
     
     % now try to recover the parameters
-    model_refit(j) = fit_model(RT,response(:,j),2,NaN*ones(1,7),0,optimizer); % 'flex' model
+    model_refit(j) = fit_model(RT,response(:,j),NaN*ones(1,8),optimizer); % 'flex' model
     params_fit(j,:) = model_refit(j).paramsOpt;
     presponse_recov(:,:,j) = model_refit(j).presponse;
     %like_fun = @(params) habit_lik(RT,response(:,j),params,model_type);
@@ -89,4 +90,14 @@ for i=1:8
     title(param_names{i})
     plot([1:Nsamps]/Nsamps,params_fit(:,i),'.')
     plot([0 1],params_original(i)*[1 1],'k')
+end
+%%
+figure(23); clf; hold on
+for i=1:8
+    subplot(2,4,i); hold on
+    title(param_names{i})
+    %w = .05; % bin width
+    %bins = [w:w:1]-w/2;
+    hist(params_fit(:,i),20);
+    plot(params_original(i)*[1 1],[0 Nsamps/10],'r','linewidth',3)
 end

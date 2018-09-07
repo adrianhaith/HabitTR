@@ -26,8 +26,8 @@ Lv = sum(RR.*presponse);
 LLv = log(Lv); % log-likelihood vector
 
 % penalty terms
-aa =1000; % cost weight on slope
-slope0 = .07; % prior on slope
+aa =600; % cost weight on slope
+slope0 = .1; % prior on slope
 
 % compute total, penalized, negative log-likelihood
 switch Nprocesses
