@@ -26,7 +26,7 @@ Lv = sum(RR.*presponse);
 LLv = log(Lv); % log-likelihood vector
 
 % penalty terms
-aa =600; % cost weight on slope
+aa =500; % cost weight on slope
 slope0 = .1; % prior on slope
 
 % compute total, penalized, negative log-likelihood

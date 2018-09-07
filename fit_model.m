@@ -24,7 +24,14 @@ function model = fit_model(RT,response,fixed_params,optimizer)
 %                   rho1          - habit strength
 %                   rho2]         - lapse rate for goal-directed response
 %
-Nprocesses = 2; % number of processes
+if(length(fixed_params)==8)
+    Nprocesses=2;
+elseif(length(fixed_params)==4)
+    Nprocesses=1;
+else
+    error('incorrect number of parameters - must be 4 (1-process) or 8 (2-process)')
+end
+    
 if(nargin < 3) % leave all parameters open unless specified
     fixed_params = NaN*ones(1,8);
 end
@@ -99,7 +106,8 @@ end
 model.presponse = getResponseProbs_U(model.xplot,model.paramsOpt,Nprocesses)
 [model.nLL model.Lv model.LL] = like_fun(model.paramsOpt);
                 
-
+model.nParams = sum(isnan(fixed_params)); % number of free parameters
+model.AIC = 2*model.nParams - 2*model.LL; % AIC
 
 %keyboard
 %{

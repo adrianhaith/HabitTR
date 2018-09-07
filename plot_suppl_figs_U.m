@@ -11,7 +11,12 @@ cols(:,:,3) = [0 100 255; 255 0 0; 0 0 0; 100 0 255]/256;
 for subject = 1:24
     for c = 1:3
         for m=1:3
-            AIC(c,subject,m) = model{m,subject,c}.AIC;
+            if(~isempty(data(subject,c).RT))
+                AIC(c,subject,m) = model{m,subject,c}.AIC;
+            else
+                AIC(c,subject,m) = NaN;
+            end
+            
         end
     end
 end
@@ -57,7 +62,7 @@ for c=1:3 % condition
                 plot([1:1200],model{2,subject,c}.presponse(1,:),'color',cols(1,:,c),'linewidth',1.5)
                 plot([1:1200],model{2,subject,c}.presponse(2,:),'color',cols(2,:,c),'linewidth',1.5)
                 plot([1:1200],model{2,subject,c}.presponse(3,:)/2,'color',cols(4,:,c),'linewidth',1.5)
-                %plot([1:1200],model{2,subject,c}.presponse(4,:),'color',cols(3,:,c),'linewidth',1.5)
+                plot([1:1200],model{2,subject,c}.presponse(4,:),'color',cols(3,:,c),'linewidth',1.5)
                 
                 if(AIC(c,subject,3)<AIC(c,subject,2)) % if flex-habit model beats habit model
                     plot([1:1200],model{3,subject,c}.presponse(1,:),'color',cols(1,:,c),'linewidth',2,'linestyle','--')
@@ -166,3 +171,42 @@ for s=1:24
 end
 plot(mean(day4_skill),'b','linewidth',2)
 plot(mean(day20_skill),'r','linewidth',2)
+
+%% compare AIC between flex-habit and no-habit model
+fhandle = figure(14); clf; hold on
+set(fhandle, 'Position', [400, 200, 900, 300]); % set size and loction on screen
+set(fhandle, 'Color','w') % set background color to white
+    
+for c=1:3
+    
+    subplot(1,3,1); hold on
+    title('no-habit vs flex-habit ')
+    plot(c+[1:24]/(2*24)-.25,AIC(c,:,3)-AIC(c,:,1),'.','markersize',12)
+    AICmean(c) = nanmean(AIC(c,:,3)-AIC(c,:,1));
+    plot(c+[0 1/2]-.25,AICmean(c)*[1 1],'k-','linewidth',2)
+    %AICstd(c) = nanstd(AIC(c,:,1)-AIC(c,:,3));
+   
+    plot([c c],AICmean(c)*[1 1]+AICstd(c)*[1 -1],'k','linewidth',2)
+    plot([0.5 3.5],[0 0],'k')
+    ylabel('\Delta AIC')
+    %ylim([-30 80])
+    
+    
+    subplot(1,3,2); hold on
+    title('habit vs flex-habit')
+    plot(c+[1:24]/(2*24)-.25,AIC(c,:,3)-AIC(c,:,2),'.','markersize',12)
+    plot(c+[0 1/2]-.25,nanmean(AIC(c,:,3)-AIC(c,:,2))*[1 1],'k-','linewidth',2)
+    plot([0.5 3.5],[0 0],'k')
+    ylabel('\Delta AIC')
+    %ylim([-10 5])
+    
+    subplot(1,3,3); hold on
+    c=2;
+    plot(AIC(c,:,2)-AIC(c,:,3),AIC(c,:,1)-AIC(c,:,3),'.','markersize',12);
+    plot([0 0],[-10 35],'k')
+    plot([-5 10],[0 0],'k')
+    xlabel('flex beats habit model ->')
+    ylabel('flex beats no-habit model ->')
+end
+
+i_flex_wins = find(AIC(2,:,3)<AIC(2,:,1) & AIC(2,:,3) < AIC(2,:,2))

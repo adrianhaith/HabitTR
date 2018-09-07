@@ -3,10 +3,11 @@
 clear all
 load HabitModelFits_U
 optimizer = 'fmincon'; % 'bads' or 'fmincon'
+tic
 %%
 Nsamps = 100;
 
-s = 8; % subject
+s = 14; % subject
 c = 2; % condition
 %model_type = 'flex-habit';
 
@@ -83,7 +84,7 @@ for j=1:Nsamps
     end
 end
 %% plot parameter distributions
-param_names = {'\mu_1','\sigma_1','\mu_2','sigma_2','AE','init AE','rho1','rho2'}
+param_names = {'\mu_1','\sigma_1','\mu_2','sigma_2','AE','init AE','rho1','rho2'};
 figure(23); clf; hold on
 for i=1:8
     subplot(2,4,i); hold on
@@ -101,3 +102,6 @@ for i=1:8
     hist(params_fit(:,i),20);
     plot(params_original(i)*[1 1],[0 Nsamps/10],'r','linewidth',3)
 end
+
+%%
+toc

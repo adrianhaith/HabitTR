@@ -2,16 +2,42 @@
 clear all
 load HabitModelFits_U
 
-rng = [1:10 12:24]; % exclude subj 11;
-LLall_2 = nansum([model(2).LLactual(2,rng)]); % likelihood of full habit model
-LLall_3 = nansum([model(3).LLactual(2,rng)]); % likelihood of flex-habit model
+% collate likelihoods
 
-Lambda_all = max(2*(LLall_3-LLall_2),0); % likelihood ratio statistic
+for c=1:3
+    for m=1:3
+        for s=1:24
+            if(~isnan(model{m,s,c}.AIC))
+                LLall{m,c}(s) = model{m,s,c}.LL;
+            else
+                LLall{m,c}(s) = NaN;
+            end
+        end
+        LLall{m,c} = LLall{m,c}(~isnan(LLall{m,c}));
+        LLsum(m,c) = sum(LLall{m,c});
+    end
+end
 
-% compute p-value
-%[h,pValue] = lratiotest(Lall_3,Lall_2,1)
-p_all2 = 1-chi2cdf(Lambda_all,sum(~isnan(model(3).LLactual(2,rng))))
-disp(['p-value for flex-habit model, 4-day practice condition = ',num2str(p_all2)])
+%% model comparisons for Minimal Practice Condition
+
+Lambda_all = max(2*(LLsum(1,1)-LLsum(2,1)),0); % likelihood ratio statistic
+p_group = 1-chi2cdf(Lambda_all,length(LLall{1,2})); % p-value
+disp(['p-value for habit model vs no-habit, min prac condition = ',num2str(p_group)])
+
+Lambda_all = max(2*(LLsum(1,1)-LLsum(3,1)),0); % likelihood ratio statistic
+p_group = 1-chi2cdf(Lambda_all,length(LLall{1,2})); % p-value
+disp(['p-value for flex-habit model vs no-habit, min prac condition = ',num2str(p_group)])
+
+%% model comparisons for 4-day Practice Condition
+
+Lambda_all = max(2*(LLsum(1,2)-LLsum(2,2)),0); % likelihood ratio statistic
+p_group = 1-chi2cdf(Lambda_all,length(LLall{1,3})); % p-value
+disp(['p-value for habit model vs no-habit, min prac condition = ',num2str(p_group)])
+
+Lambda_all = max(2*(LLsum(2,2)-LLsum(3,2)),0); % likelihood ratio statistic
+p_group = 1-chi2cdf(Lambda_all,length(LLall{1,3})); % p-value
+disp(['p-value for flex-habit model vs no-habit, min prac condition = ',num2str(p_group)])
+
 %%
 % individual participants
 for s=1:24

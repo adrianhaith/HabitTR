@@ -2,6 +2,9 @@
 %
 % model 1 = habit model - assume
 %
+
+optcon = optimoptions('fmincon','display','iter','MaxFunEvals',30000);
+
 clear all
 tic
 optimizer= 'fmincon'; % 'bads' or 'fmincon'
@@ -14,16 +17,19 @@ for c = 1:3 % 1=minimal, 2=4day, 3=4week
         if (~isempty(data(subject,c).RT)) % if this subject is not already excluded
             for m=1:3
                 % set up and fit each model
+                
+                % parameters:
+                % [mu1 sigma1 mu2 sigma2 initAE finalAE rho1 rho2]
                 switch(m)
                     case 1;
                         Nprocesses = 2;
-                        constrained_params = [NaN*ones(1,6) 0];
+                        constrained_params = [0 0 NaN NaN NaN NaN 0 1];
                     case 2;
                         Nprocesses = 2;
-                        constrained_params = [NaN*ones(1,6) 1];
+                        constrained_params = [NaN*ones(1,6) 1 NaN];
                     case 3;
                         Nprocesses = 2;
-                        constrained_params = NaN*ones(1,7);
+                        constrained_params = NaN*ones(1,8);
                 end
                 %habit_lik(data(subject,c).RT,data(subject,c).response,params,model(m).name);
                 model{m,subject,c} = fit_model(data(subject,c).RT,data(subject,c).response,constrained_params,optimizer);
@@ -58,20 +64,20 @@ end
 for c=1:3
     for subject=1:24
         if(~isempty(data(subject,c).RT))
-            nParams = [4,6,7]; % 4 params for no-habit model(muB,sigmaB,q_init,q_B)
+            %nParams = [4,7,8]; % 4 params for no-habit model(muB,sigmaB,q_init,q_B)
             % + 2 for habit (muA,sigmaA)
             % + 1 for flex-habit (rho)
-            for m=1:3
+            %for m=1:3
                 %model{m,s,c}.LLactual(c,subject) = sum(log(model(m).Lv{subject,c})); % compute actual (unpenalized) log-likelihood
-                model{m,subject,c}.AIC = 2*nParams(m) - 2*model{m,subject,c}.LL;
-            end
+                %model{m,subject,c}.AIC = 2*nParams(m) - 2*model{m,subject,c}.LL;
+            %end
             %AIC(c,subject,2) = 2*4 - 2*sum(model(2).LLv{c,subject};
             %AIC(c,subject,3) = 2*8 - 2*sum(model(3).LLv{c,subject};
         else
             for m=1:3
-                model{m,subject,c}.AIC = NaN;
-                model{m,subject,c}.LLopt=NaN;
-                model{m,subject,c}.LLactual=NaN;
+                %model{m,subject,c}.AIC = NaN;
+                %model{m,subject,c}.LLopt=NaN;
+                %model{m,subject,c}.LLactual=NaN;
             end
         end
     end

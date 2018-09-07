@@ -12,15 +12,25 @@ function presponse = getResponseProbs(RT,params,Nresponses,incongruent)
 %           default no-habit rate;
 %           habit strength (rho); - probability of habitual expression
 %           lapse rate (rho2)] - probability of not retrieving correct response
+if(nargin<3)
+    Nresponses = 2; % always assume two responses unless otherwise specified
+end
 
-Nresponses = 2; % always assume two responses
-mu(1:2) = [params(1) params(3)];
-var(1:2) = [params(2) params(4)];
-
-q(1) = .95; % asymptotic error for first process
-q(2) = params(5); % asymptotic error for second process
-init_err = params(6); % initial error rates for habitual and goal-directed responses
-rho(1:2) = 1-params(7:8); % lapse rate for habit and goal-directed response selection
+if(Nresponses==2)
+    mu(1:2) = [params(1) params(3)];
+    var(1:2) = [params(2) params(4)];
+    
+    q(1) = .95; % asymptotic error for first process
+    q(2) = params(5); % asymptotic error for second process
+    init_err = params(6); % initial error rates for habitual and goal-directed responses
+    rho(1:2) = 1-params(7:8); % lapse rate for habit and goal-directed response selection
+else
+    mu = params(1);
+    var = params(2);
+    q(1) = .95;
+    q(2) = params(3);
+    init_err = params(4);
+end
 
 for i=1:Nresponses
     Phi(i,:) = normcdf(RT,mu(i),var(i)); % probability that A has been planned by RT
@@ -40,7 +50,7 @@ switch(Nresponses)
         %Alpha(5,:) = [initAE initAE qB qB]; % mapping B, no-conflict
         
         PhiAll = [1-Phi(1,:); Phi(1,:)];
-        
+        P = eye(2);
     case 2
 
             % distribution of responses (rows: rA, rB, other) given
