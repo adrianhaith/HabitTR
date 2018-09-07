@@ -133,6 +133,7 @@ for c=1:3
     ylim([-10 5])
 end
 
+
 %% extract parameters
 for m=1:3
     for subject = 1:24
@@ -210,3 +211,4 @@ for c=1:3
 end
 
 i_flex_wins = find(AIC(2,:,3)<AIC(2,:,1) & AIC(2,:,3) < AIC(2,:,2))
+i_habitual = find(AIC(2,:,2)<AIC(2,:,1))

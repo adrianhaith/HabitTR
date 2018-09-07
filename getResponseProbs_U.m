@@ -1,4 +1,4 @@
-function presponse = getResponseProbs(RT,params,Nresponses,incongruent)
+function presponse = getResponseProbs(RT,params,Nresponses)
 % returns response probabilities (correct, habit, error) given RTs and
 % parameters
 %

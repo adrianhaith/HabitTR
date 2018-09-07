@@ -22,6 +22,13 @@ for c=1:3
     
 end
 
+%% compare AICs
+for c=1:3
+    AIC(:,c) = [model(:,c).AIC];
+end
+AIC(2,:)-AIC(1,:)
+AIC(3,:)-AIC(2,:)
+
 
 %% plot results
 figure(1); clf; hold on
@@ -44,6 +51,10 @@ for c=1:3
         plot(xplot,model_unchanged(c).presponse(1,:),'k-','linewidth',2)
         plot(xplot,data_all(c).sw(4,:),'k')
     end
+    
+end
+
+
     %{
     % no-habit model
     subplot(3,3,c+3); hold on
@@ -70,7 +81,7 @@ for c=1:3
     plot(xplot,model_unchanged(c).presponse(1,:),'k--')
     plot(xplot,data_all(c).sw(4,:),'k')
     %}
-end
+
 
 %% predict 20-day data by just increasing SAT for final day
 %{

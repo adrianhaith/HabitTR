@@ -27,6 +27,12 @@ for c=1:3
     
 end
 
+%% compare AICs
+for c=1:3
+    AIC(:,c) = [model(:,c).AIC];
+end
+AIC(2,:)-AIC(1,:)
+AIC(3,:)-AIC(2,:)
 
 %% plot results
 figure(1); clf; hold on
@@ -49,6 +55,23 @@ for c=1:3
         plot(xplot,model_unchanged(c).presponse(1,:),'k-','linewidth',2)
         plot(xplot,data_all(c).sw(4,:),'k')
     end
+end
+
+%% constrained prediction for 20-day condition
+params_predicted_20day = model(2,2).paramsOpt;
+params_predicted_20day(1:2) = model_unchanged(3).paramsOpt(1:2); % set mu1/sigma1 to unchanged symbols
+
+presponse_predicted_20day = getResponseProbs_U(xplot,params_predicted_20day);
+figure(1);
+subplot(3,3,6); hold on
+for r=1:3
+    %plot(xplot,data_all(3).sw(r,:)*scaling(r),col{r})
+    plot(xplot,presponse_predicted_20day(r,:)*scaling(r),col{r},'linewidth',2,'linestyle',':')
+    %plot(model(2,3).presponse(r,:)*scaling(r),col{r},'linewidth',2)
+end
+
+
+
     %{
     % no-habit model
     subplot(3,3,c+3); hold on
@@ -75,7 +98,7 @@ for c=1:3
     plot(xplot,model_unchanged(c).presponse(1,:),'k--')
     plot(xplot,data_all(c).sw(4,:),'k')
     %}
-end
+
 
 %% predict 20-day data by just increasing SAT for final day
 %{
