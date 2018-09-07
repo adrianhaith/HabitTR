@@ -1,5 +1,6 @@
 %% fit global model to pooled data across all subjects
 clear all
+%load PooledData_HabitualOnly
 load PooledData
 
 for c=1:3

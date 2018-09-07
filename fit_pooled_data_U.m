@@ -1,6 +1,7 @@
 %% fit global model to pooled data across all subjects
 clear all
 load PooledData
+%load PooledData_HabitualOnly
 
 for c=1:3
     % fit unchanged data
@@ -26,7 +27,10 @@ end
 for c=1:3
     AIC(:,c) = [model(:,c).AIC];
 end
+disp('habit model versus no-habit model (lower => habit)')
 AIC(2,:)-AIC(1,:)
+
+disp('flex-habit model versus nhabit model (lower => flex-habit)')
 AIC(3,:)-AIC(2,:)
 
 

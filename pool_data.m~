@@ -33,7 +33,7 @@ for c=1:3
     data_all(c).sw(4,:) = sliding_window(data_all(c).RT_unchanged,data_all(c).response_unchanged==1,xplot,.05);
 end
 if(habitual_only)
-    save PooledData_HabitualOnly
+    save PooledData_Habitual
 else
     save PooledData
 end

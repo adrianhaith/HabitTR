@@ -212,3 +212,20 @@ end
 
 i_flex_wins = find(AIC(2,:,3)<AIC(2,:,1) & AIC(2,:,3) < AIC(2,:,2))
 i_habitual = find(AIC(2,:,2)<AIC(2,:,1))
+
+%% compare asymptotic habit parameters
+rho2 = squeeze(params_all(8,:,:,2));
+figure(15); clf; hold on
+plot([1 2],rho2(:,2:3),'b.')
+[t p] = ttest(rho2(:,2),rho2(:,3),2,'independent')
+xlim([.5 2.5])
+plot([1 2],nanmean(rho2(:,2:3)),'b','linewidth',2)
+
+%% AIC comparison
+i_nohabit_2 = find(AIC(2,:,1)<AIC(2,:,2) & AIC(2,:,1)<AIC(2,:,3))
+i_habit_2 = find(AIC(2,:,2)<AIC(2,:,1) & AIC(2,:,2)<AIC(2,:,3))
+i_flexhabit_2 = find(AIC(2,:,3)<AIC(2,:,1) & AIC(2,:,3)<AIC(2,:,2))
+
+i_nohabit_3 = find(AIC(3,:,1)<AIC(3,:,2) & AIC(3,:,1)<AIC(3,:,3))
+i_habit_3 = find(AIC(3,:,2)<AIC(3,:,1) & AIC(3,:,2)<AIC(3,:,3))
+i_flexhabit_3 = find(AIC(3,:,3)<AIC(3,:,1) & AIC(3,:,3)<AIC(3,:,2))
