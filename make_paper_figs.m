@@ -119,4 +119,31 @@ ylim([0 1])
 xlim([0 xmax])
 
 %export_fig ModelFits_part1 -eps
+%% compare habit and no-habit models with the same parameter
+
+paramsDemo = [.4 .09 .4 .09 .99 .25 1 1];
+xplot = [0:.001:1.2];
+xmax = 1.2;
+
+presponse_habit = getResponseProbs_U(xplot,paramsDemo,2);
+
+paramsDemo(7) = 0;
+presponse_nohabit = getResponseProbs_U(xplot,paramsDemo,2);
+
+fhandle = figure(103); clf; hold on
+set(fhandle, 'Position', [600, 400, 500, 200]); % set size and loction on screen
+set(fhandle, 'Color','w') % set background color to white
+
+subplot(1,2,1); hold on
+plot(presponse_nohabit(1,:),'b')
+plot(presponse_nohabit(2,:),'r')
+plot(presponse_nohabit(3,:)/2,'m')
+xlim([0 1200])
+
+subplot(1,2,2); hold on
+plot(presponse_habit(1,:),'b')
+plot(presponse_habit(2,:),'r')
+plot(presponse_habit(3,:)/2,'m')
+xlim([0 1200])
+
 

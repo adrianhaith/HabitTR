@@ -1,7 +1,7 @@
 %% pool data across all subjects
 clear all
 load HabitData
-habitual_only = 1;
+habitual_only = 0;
 if(habitual_only)
     load i_habitual
     subjects = i_habitual;
@@ -31,6 +31,8 @@ for c=1:3
     data_all(c).response_unchanged = [data(:,c).response_unchanged];
     
     data_all(c).sw(4,:) = sliding_window(data_all(c).RT_unchanged,data_all(c).response_unchanged==1,xplot,.05);
+    data_all(c).sw(5,:) = sliding_window(data_all(c).RT_unchanged,data_all(c).response_unchanged==2,xplot,.05);
+    data_all(c).sw(6,:) = sliding_window(data_all(c).RT_unchanged,data_all(c).response_unchanged==3,xplot,.05);
 end
 if(habitual_only)
     save PooledData_HabitualOnly

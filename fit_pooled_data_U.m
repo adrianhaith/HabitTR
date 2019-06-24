@@ -88,8 +88,8 @@ end
 
 
 %% predict 20-day data by just increasing SAT for final day
-%{
-model_predicted = model_habit{2};
+%
+model_predicted = model(2,2);
 model_predicted.paramsOpt(1:2) = model_unchanged(3).paramsOpt(1:2); % set to 'unchanged' parameters
 
 model_predicted.presponse = getResponseProbs_U(model_predicted.xplot,model_predicted.paramsOpt,2)
@@ -98,15 +98,40 @@ figure(3); clf; hold on
 for r=1:3
     plot(xplot,data_all(c).sw(r,:)*scaling(r),col{r})
     %plot(xplot,model_all_flex(c).presponse(r,:),col{r})
-    plot(xplot,model_flexhabit{c}.presponse(r,:)*scaling(r),col{r},'linestyle','--')
-    plot(xplot,model_predicted.presponse(r,:)*scaling(r),col{r},'linewidth',2)
+    %plot(xplot,model_flexhabit{c}.presponse(r,:)*scaling(r),col{r},'linestyle','--')
+    plot(xplot,model_predicted.presponse(r,:)*scaling(r),col{r},'linewidth',2);
+    plot(xplot,model(2,2).presponse(r,:)*scaling(r),':','color',col{r},'linewidth',1)
 end
-plot(xplot,model_flexhabit{c}.presponse(4,:),'c','linestyle','--')
+%plot(xplot,model(2,3).presponse(4,:),'c','linestyle','--')
+plot(xplot,model_predicted.presponse(4,:),'c')
 plot(xplot,model_unchanged(c).presponse(1,:),'k--')
 plot(xplot,data_all(c).sw(4,:),'k')
 
-%% predict 20-day data by just increasing SAT for final day
-model_predicted = model_flexhabit{2};
+
+%% make prediciton figure for paper
+fhandle = figure(4); clf; hold on
+set(fhandle, 'Position', [450, 200, 800, 300]); % set size and loction on screen
+set(fhandle, 'Color','w') % set background color to white
+
+subplot(1,2,1); hold on
+for r=1:3
+    plot(xplot,data_all(2).sw(r,:)*scaling(r),col{r})
+    plot(xplot,model(2,2).presponse(r,:)*scaling(r),col{r},'linewidth',2)
+end
+plot(xplot,data_all(2).sw(4,:),'k')
+plot(xplot,model_unchanged(2).presponse(1,:),'k','linewidth',2)
+
+
+subplot(1,2,2); hold on
+for r=1:3
+    plot(xplot,data_all(3).sw(r,:)*scaling(r),col{r})
+    plot(xplot,model_predicted.presponse(r,:)*scaling(r),col{r},'linewidth',2,'lineStyle',':')
+end
+plot(xplot,data_all(3).sw(4,:),'k')
+plot(xplot,model_unchanged(3).presponse(1,:),'k','linewidth',2)
+
+%{
+model_predicted = model(3,2);
 model_predicted.paramsOpt(1:2) = model_unchanged(3).paramsOpt(1:2); % set to 'unchanged' parameters
 
 model_predicted.presponse = getResponseProbs_U(model_predicted.xplot,model_predicted.paramsOpt,2)
@@ -123,3 +148,6 @@ plot(xplot,model_flexhabit{c}.presponse(4,:),'c','linestyle','--')
 plot(xplot,model_unchanged(c).presponse(1,:),'k--')
 plot(xplot,data_all(c).sw(4,:),'k')
 %}
+
+model_pooled = model;
+save model_pooled model_pooled data_all

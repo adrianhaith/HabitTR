@@ -19,7 +19,7 @@ RT = data(s,c).RT;
 
 % set parameters
 params_original = model{3,s,c}.paramsOpt;
-params_original(7) = 0.5;
+params_original(7) = 1;
 % get parameter fits for this participant:
 %like_fun = @(params) habit_lik(data(s,c).RT,data(s,c).response,params,model_type);
 %habit_lik(data(s,c).RT,data(s,c).response,paramsInit,model_type);
@@ -84,7 +84,7 @@ for j=1:Nsamps
     end
 end
 %% plot parameter distributions
-param_names = {'\mu_1','\sigma_1','\mu_2','sigma_2','AE','init AE','rho1','rho2'};
+param_names = {'\mu_1','\sigma_1','\mu_2','\sigma_2','AE','init AE','rho1','rho2'};
 figure(23); clf; hold on
 for i=1:8
     subplot(2,4,i); hold on
@@ -93,7 +93,7 @@ for i=1:8
     plot([0 1],params_original(i)*[1 1],'k')
 end
 %%
-figure(23); clf; hold on
+figure(24); clf; hold on
 for i=1:8
     subplot(2,4,i); hold on
     title(param_names{i})

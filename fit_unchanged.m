@@ -5,7 +5,7 @@ load HabitData
 for s=1:24
     for c=1:3
         if(~isempty(data(s,c).RT))
-            model_unchanged(s,c) = fit_model(data(s,c).RT_unchanged,(data(s,c).response_unchanged>1)+1,1);
+            model_unchanged(s,c) = fit_model_1proc(data(s,c).RT_unchanged,(data(s,c).response_unchanged>1)+1);
             
             % constrain initAE
             %model_unchanged_constrained(s,c) = fit_model(data(s,c).RT_unchanged,(data(s,c).response_unchanged>1)+1,1,[NaN NaN 1 .25])
@@ -32,7 +32,7 @@ for s=1:24
             constrained_params = NaN*ones(1,6);
             %constrained_params(1:2) = model_unchanged(s,c).paramsOpt(1:2);
             
-            model(s,c) = fit_model(data(s,c).RT,data(s,c).response,2,NaN*ones(1,8),0);
+            model(s,c) = fit_model_1proc(data(s,c).RT,data(s,c).response,2,NaN*ones(1,8),0);
             %model_constrained(s,c) = fit_model(data(s,c).RT,data(s,c).response,2,[constrained_params 1]);
             model_constrained_simp(s,c) = fit_model(data(s,c).RT,data(s,c).response,2,[constrained_params 1 NaN],1);
             model_constrained_simp_flex(s,c) = fit_model(data(s,c).RT,data(s,c).response,2,[constrained_params NaN NaN],1);

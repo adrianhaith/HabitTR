@@ -99,6 +99,8 @@ switch(optimizer)
         [model.paramsOpt, model.LLopt] = bads(like_fun,paramsInit,LB,UB);
         
     case 'fmincon'
+        % increase maximum number of function evaluations
+        options = optimset('MaxFunEvals',1000);
         %[model(m).paramsOpt(subject,:,c), model(m).LLopt(c,subject)] = fmincon(like_fun,paramsInit,A,B,Aeq,Beq,LB,UB);
         [model.paramsOpt, model.LLopt] = fmincon(like_fun,paramsInit,A,B,Aeq,Beq,LB,UB);
 end

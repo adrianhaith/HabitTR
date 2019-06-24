@@ -36,7 +36,7 @@ AIC(2,:)-AIC(1,:)
 AIC(3,:)-AIC(2,:)
 
 %% plot results
-figure(1); clf; hold on
+figure(11); clf; hold on
 col = {'b','r','m'};
 scaling = [1 1 .5]; % scaling for plotting 'other' error so that all curves start at 0.25 (but don't sum to 1)
 condition = {'Min. Practice','4-day Practice','20-day Practice'};
@@ -54,6 +54,7 @@ for c=1:3
         end
         plot(xplot,model(m,c).presponse(4,:),'c','linewidth',2)
         plot(xplot,model_unchanged(c).presponse(1,:),'k-','linewidth',2)
+        plot(xplot,model_unchanged(c).presponse(2,:)/3,'k-','linewidth',2)
         plot(xplot,data_all(c).sw(4,:),'k')
     end
 end
@@ -63,7 +64,7 @@ params_predicted_20day = model(2,2).paramsOpt;
 params_predicted_20day(1:2) = model_unchanged(3).paramsOpt(1:2); % set mu1/sigma1 to unchanged symbols
 
 presponse_predicted_20day = getResponseProbs_U(xplot,params_predicted_20day);
-figure(1);
+figure(11);
 subplot(3,3,6); hold on
 for r=1:3
     %plot(xplot,data_all(3).sw(r,:)*scaling(r),col{r})
@@ -71,69 +72,92 @@ for r=1:3
     %plot(model(2,3).presponse(r,:)*scaling(r),col{r},'linewidth',2)
 end
 
+%% better fit of model predictions
+fhandle = figure(12); clf; hold on
+set(fhandle, 'Position', [200*c, 100, 800, 600]); % set size and loction on screen
+set(fhandle, 'Color','w') % set background color to white
 
+subplot(2,2,1); hold on
 
-    %{
-    % no-habit model
-    subplot(3,3,c+3); hold on
-    title([condition{c},' No-Habit Model'])
-    for r=1:3
-        plot(xplot,data_all(c).sw(r,:)*scaling(r),col{r})
-        %plot(xplot,model_all_flex(c).presponse(r,:),col{r})
-        plot(xplot,model_nohabit{c}.presponse(r,:)*scaling(r),col{r},'linestyle','--')
-    end
-    
-    plot(xplot,model_unchanged(c).presponse(1,:),'k--')
-    plot(xplot,data_all(c).sw(4,:),'k')
-    
-    % flex-habit model
-    subplot(3,3,c+6); hold on
-    title([condition{c},' Flex-Habit Model'])
-    for r=1:3
-        plot(xplot,data_all(c).sw(r,:)*scaling(r),col{r})
-        %plot(xplot,model_all_flex(c).presponse(r,:),col{r})
-        plot(xplot,model_flexhabit{c}.presponse(r,:)*scaling(r),col{r},'linestyle','--')
+title('data')
+for r=1:3
+    plot(xplot,data_all(2).sw(r,:)*scaling(r),col{r},'linewidth',2)
+    plot(xplot,data_all(3).sw(r,:)*scaling(r),col{r},'linestyle','--','linewidth',2)
+end
+plot(xplot,data_all(2).sw(4,:),'k','linewidth',2)
+plot(xplot,data_all(3).sw(4,:),'k--','linewidth',2)
+
+subplot(2,2,2); hold on
+title('model')
+for r=1:3
+    plot(xplot,model(2,2).presponse(r,:)*scaling(r),col{r},'linewidth',2)
+    plot(xplot,presponse_predicted_20day(r,:)*scaling(r),col{r},'linewidth',2,'linestyle',':')
+end
+plot(xplot,model_unchanged(2).presponse(1,:),'k-','linewidth',2)
+plot(xplot,model_unchanged(3).presponse(1,:),'k:','linewidth',2)
         
-    end
-    plot(xplot,model_flexhabit{c}.presponse(4,:),'c','linestyle','--')
-    plot(xplot,model_unchanged(c).presponse(1,:),'k--')
-    plot(xplot,data_all(c).sw(4,:),'k')
-    %}
-
-
-%% predict 20-day data by just increasing SAT for final day
-%{
-model_predicted = model_habit{2};
-model_predicted.paramsOpt(1:2) = model_unchanged(3).paramsOpt(1:2); % set to 'unchanged' parameters
-
-model_predicted.presponse = getResponseProbs_U(model_predicted.xplot,model_predicted.paramsOpt,2)
-
-figure(3); clf; hold on
+subplot(2,2,3); hold on
 for r=1:3
-    plot(xplot,data_all(c).sw(r,:)*scaling(r),col{r})
-    %plot(xplot,model_all_flex(c).presponse(r,:),col{r})
-    plot(xplot,model_flexhabit{c}.presponse(r,:)*scaling(r),col{r},'linestyle','--')
-    plot(xplot,model_predicted.presponse(r,:)*scaling(r),col{r},'linewidth',2)
+    plot(xplot,data_all(2).sw(r,:)*scaling(r),col{r},'linewidth',2)
+    plot(xplot,model(2,2).presponse(r,:)*scaling(r),col{r},'linewidth',2)
 end
-plot(xplot,model_flexhabit{c}.presponse(4,:),'c','linestyle','--')
-plot(xplot,model_unchanged(c).presponse(1,:),'k--')
-plot(xplot,data_all(c).sw(4,:),'k')
+plot(xplot,data_all(2).sw(4,:),'k','linewidth',2)
+plot(xplot,model_unchanged(2).presponse(1,:),'k','linewidth',2)
 
-%% predict 20-day data by just increasing SAT for final day
-model_predicted = model_flexhabit{2};
-model_predicted.paramsOpt(1:2) = model_unchanged(3).paramsOpt(1:2); % set to 'unchanged' parameters
-
-model_predicted.presponse = getResponseProbs_U(model_predicted.xplot,model_predicted.paramsOpt,2)
-
-figure(4); clf; hold on
+subplot(2,2,4); hold on
 for r=1:3
-    plot(xplot,data_all(c).sw(r,:)*scaling(r),col{r})
-    %plot(xplot,model_all_flex(c).presponse(r,:),col{r})
-    plot(xplot,model_flexhabit{2}.presponse(r,:)*scaling(r),col{r},'linestyle','--')
-    plot(xplot,model_predicted.presponse(r,:)*scaling(r),col{r},'linewidth',2)
-    plot(xplot,model_flexhabit{3}.presponse(r,:)*scaling(r),col{r},'linestyle',':')
+    plot(xplot,data_all(3).sw(r,:)*scaling(r),col{r},'linewidth',2)
+    %plot(xplot,model(2,3).presponse(r,:)*scaling(r),col{r},'linewidth',2)
+    plot(xplot,presponse_predicted_20day(r,:)*scaling(r),col{r},'linewidth',2,'linestyle',':')
 end
-plot(xplot,model_flexhabit{c}.presponse(4,:),'c','linestyle','--')
-plot(xplot,model_unchanged(c).presponse(1,:),'k--')
-plot(xplot,data_all(c).sw(4,:),'k')
-%}
+plot(xplot,data_all(3).sw(4,:),'k','linewidth',2)
+plot(xplot,model_unchanged(3).presponse(1,:),'k','linewidth',2)
+
+plot(xplot,data_all(3).sw(4,:),'k--','linewidth',2)
+        
+%% model predictions from flex-habit model
+%% constrained prediction for 20-day condition
+params_predicted_20day_flex = model(3,2).paramsOpt;
+params_predicted_20day_flex(1:2) = model_unchanged(3).paramsOpt(1:2); % set mu1/sigma1 to unchanged symbols
+params_predicted_20day_flex(7) = 1; % set rho_A = 1;
+
+presponse_predicted_20day_flex = getResponseProbs_U(xplot,params_predicted_20day);
+figure(11);
+subplot(3,3,6); hold on
+for r=1:3
+    %plot(xplot,data_all(3).sw(r,:)*scaling(r),col{r})
+    plot(xplot,presponse_predicted_20day_flex(r,:)*scaling(r),col{r},'linewidth',4,'linestyle',':')
+    %plot(model(2,3).presponse(r,:)*scaling(r),col{r},'linewidth',2)
+end
+
+%% examine what flex-habit model would look like at day 4, if rho_A forced to 1
+params_predicted_20day_flex4 = model(3,2).paramsOpt;
+%params_predicted_20day_flex4(1:2) = model_unchanged(3).paramsOpt(1:2); % set mu1/sigma1 to unchanged symbols
+params_predicted_20day_flex4(7) = 1; % set rho_A = 1;
+
+presponse_predicted_20day_flex4 = getResponseProbs_U(xplot,params_predicted_20day);
+figure(11);
+subplot(3,3,9); hold on
+for r=1:3
+    %plot(xplot,data_all(3).sw(r,:)*scaling(r),col{r})
+    plot(xplot,presponse_predicted_20day_flex(r,:)*scaling(r),col{r},'linewidth',4,'linestyle',':')
+    %plot(model(2,3).presponse(r,:)*scaling(r),col{r},'linewidth',2)
+end
+
+
+%% plot to try to figure out unchanged versus other error difference
+
+figure(101); clf; hold on
+plot(model_unchanged(2).presponse(1,:),'k')
+plot(model_unchanged(2).presponse(2,:)/3,'k')
+
+plot(model(2,2).presponse(4,:),'c')
+plot(model(2,2).presponse(3,:)/2,'m')
+plot(1-3*model(2,2).presponse(3,:)/2,'m')
+
+plot(model(2,2).presponse(5,:),'b')
+
+% plot gaussians:
+figure(102); clf; hold on
+plot(xplot,normpdf(xplot,model(2,2).paramsOpt(1),model(2,2).paramsOpt(2)),'r')
+plot(xplot,normpdf(xplot,model(2,2).paramsOpt(3),model(2,2).paramsOpt(4)),'b')

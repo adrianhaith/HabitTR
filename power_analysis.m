@@ -257,3 +257,5 @@ habit_index_std_norm = nanstd(habit_index_norm_av);
 
 N = sampsizepwr('t2',[0 habit_index_std(2)],habit_index_mean(2)/2,0.8)
 N_norm = sampsizepwr('t2',[0 habit_index_std_norm(2)],habit_index_mean_norm(2)/2,0.8)
+
+
