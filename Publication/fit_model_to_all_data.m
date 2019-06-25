@@ -19,13 +19,13 @@ for c = 1:3 % 1=minimal, 2=4day, 3=20day
                 %  NaN implies that this parameter is unconstrained
                 switch(m)
                     case 1;
-                        constrained_params = [0 0 NaN NaN NaN NaN 0 1];
+                        Nprocesses = 1;
                     case 2;
-                        constrained_params = [NaN*ones(1,6) 1 NaN];
+                        Nprocesses = 2;
 
                 end
                 % fit this model to data for this subject and condition
-                model{m,subject,c} = fit_model(data(subject,c).RT,data(subject,c).response,constrained_params,m);       
+                model{m,subject,c} = fit_model(data(subject,c).RT,data(subject,c).response,Nprocesses);    
             end
         end
     end

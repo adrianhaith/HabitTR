@@ -32,7 +32,7 @@ else % habit model
     q(1) = .95; % asymptotic error for first process
     q(2) = params(5); % asymptotic error for second process
     q_I = params(6); % initial error rates for habitual and goal-directed responses
-    rho = 1-params(8); % lapse rate for habit and goal-directed response selection
+    rho = params(7); % lapse rate for habit and goal-directed response selection
     for i=1:Nprocesses
         Phi(i,:) = normcdf(RT,mu(i),sigma(i)); % probability that A has been planned by RT
     end
