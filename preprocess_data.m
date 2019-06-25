@@ -1,6 +1,6 @@
-% load in raw data and pre-process in format suitable for fitting the model
+% load in raw data from timed-response blocks and store in a format suitable for fitting the model
 clear all
-cond_str = {'minimal','4day','4week'};
+cond_str = {'minimal','4day','20day'};
 
 load tmp;
 clear data
@@ -13,7 +13,7 @@ for c = 1:3 % 1=minimal, 2=4day, 3=4week
     end
     
     for subject = 1:maxSub
-        if ismember(subject,exclude) == 0,  %only run on subjects that completed the study
+        if ismember(subject,exclude) == 0  %only run on subjects that completed the study
             subStr = ['s' num2str(subject)];
             if c==1
                 unchanged = d.e1.(subStr).untrained.tr.sw.unchanged;	revised = d.e1.(subStr).untrained.tr.sw.revised; habit = d.e1.(subStr).untrained.tr.sw.habit;
