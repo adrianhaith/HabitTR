@@ -25,7 +25,7 @@ for c = 1:3 % 1=minimal, 2=4day, 3=20day
 
                 end
                 % fit this model to data for this subject and condition
-                model{m,subject,c} = fit_model(data(subject,c).RT,data(subject,c).response,constrained_params);       
+                model{m,subject,c} = fit_model(data(subject,c).RT,data(subject,c).response,constrained_params,m);       
             end
         end
     end

@@ -28,7 +28,7 @@ function [nLL Lv LL] = habit_lik(RT,response,params,Nprocesses)
 %
 
 % get probabilites of each response at each RT
-presponse = getResponseProbs(RT,params);
+presponse = getResponseProbs(RT,params,Nprocesses);
 
 % build vector of likelihoods for observed responses
 RR = zeros(size(presponse)); % binary 3 x N matrix 
@@ -42,10 +42,10 @@ LLv = log(Lv); % log-likelihood vector
 
 % penalty terms
 lambda =500; % cost weight on slope
-slope0 = .1; % prior on slope
+sigma0 = .1; % prior on slope
 
 % compute total, penalized, negative log-likelihood
-nLL = -sum(LLv) + lambda*(params(2)-slope0)^2 + lambda*(params(4)-slope0)^2;
+nLL = -sum(LLv) + lambda*(params(2)-sigma0)^2 + lambda*(params(4)-sigma0)^2;
 LL= sum(LLv); % true log-likelihood (without penalty)
 
 

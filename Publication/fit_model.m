@@ -1,4 +1,4 @@
-function model = fit_model(RT,response,fixed_params,optimizer)
+function model = fit_model(RT,response,fixed_params,Nprocesses)
 % fits selection model to forced RT data by max. likelihood
 %
 % Inputs:
@@ -69,7 +69,7 @@ RT = RT(good_trials);
 response = response(good_trials);
 
 % create function handle for likelihood
-like_fun = @(params) habit_lik(RT,response,params);
+like_fun = @(params) habit_lik(RT,response,params,Nprocesses);
 
 %-- perform optimization --
 % set optimization options
@@ -78,7 +78,7 @@ optcon = optimoptions('fmincon','display','iter','MaxFunEvals',30000);
 
 
 model.tplot = [.001:.001:1.2]; % time (useful for plotting
-model.presponse = getResponseProbs(model.tplot,model.paramsOpt) % time-varying response probabilities
+model.presponse = getResponseProbs(model.tplot,model.paramsOpt,Nprocesses) % time-varying response probabilities
 [model.nLL model.Lv model.LL] = like_fun(model.paramsOpt);
                 
 model.nParams = sum(isnan(fixed_params)); % number of free parameters
